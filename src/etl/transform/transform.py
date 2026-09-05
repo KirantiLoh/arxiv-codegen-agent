@@ -89,7 +89,7 @@ def chunk_markdown_file(markdown_content: str, additional_metadata: dict) -> lis
 
     final_chunks = []
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500, chunk_overlap=100
+        chunk_size=1000, chunk_overlap=150,
     )
 
     for doc in header_chunks:
