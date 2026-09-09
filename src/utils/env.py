@@ -1,12 +1,12 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 
 
 class EnvConfig:
     """Class to hold environment variable configurations."""
 
-    def __init__(self, env_file: str = ".env"):
-        load_dotenv(dotenv_path=env_file)
+    def __init__(self, env_file: str = ""):
+        load_dotenv(dotenv_path=env_file if env_file != "" else find_dotenv())
         self.QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
         self.QDRANT_COLLECTION_NAME = os.getenv(
             "QDRANT_COLLECTION_NAME", "saved_papers")
