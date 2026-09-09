@@ -5,17 +5,21 @@ import logging
 import sys
 import time
 
-from etl.transform.transform import chunk_markdown_file
-
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
-def pipeline(paper_ids, download_dir, markdown_dir, qdrant_url="http://localhost:6333", qdrant_collection_name="saved_papers"):
+def pipeline(paper_ids, download_dir, markdown_dir, redis_url="redis://:arxiv-codegen-pw@localhost:6379", qdrant_url="http://localhost:6333", qdrant_collection_name="saved_papers"):
     from etl.extract.extractor import get_arxiv_paper_by_ids, download_arxiv_papers_pdf
-    from etl.transform.transform import convert_doc2md, clean_docling_output, init_converter
-    from etl.load.loader import init_qdrant_vector_store
+    from etl.transform.transform import convert_doc2md, clean_docling_output, init_converter, chunk_markdown_file, MarkdownHeaderTextSplitter
+    from utils.db import init_qdrant_vector_store
     from qdrant_client import QdrantClient
+    import uuid
     import arxiv
+    from langchain_classic.retrievers import MultiVectorRetriever
+    from langchain_community.storage import RedisStore
+    from langchain_classic.storage._lc_store import create_kv_docstore
+
+    from utils.env import EnvConfig
 
     client = QdrantClient(url=qdrant_url)
     converter = init_converter()
@@ -30,12 +34,19 @@ def pipeline(paper_ids, download_dir, markdown_dir, qdrant_url="http://localhost
 
     logging.info("Initializing Qdrant vector store...")
     vector_store = init_qdrant_vector_store(
-        client, qdrant_collection_name, 384, f"{qdrant_collection_name}_sparse_bm25"
+        client, EnvConfig(
+        ).EMBEDDING_MODEL, qdrant_collection_name, 384, f"{qdrant_collection_name}_sparse_bm25"
     )
 
-    # PRODUCTION UPGRADE: Rolling batch upserts to prevent OOM crashes
-    BATCH_SIZE = 500
-    current_batch = []
+    bytestore = RedisStore(redis_url=redis_url)
+
+    docstore = create_kv_docstore(bytestore)
+
+    retriever = MultiVectorRetriever(
+        docstore=docstore,
+        id_key="parent_id",
+        vectorstore=vector_store
+    )
 
     for paper in papers:
         arxiv_id = paper.get_short_id()
@@ -49,35 +60,38 @@ def pipeline(paper_ids, download_dir, markdown_dir, qdrant_url="http://localhost
                 logging.info(
                     f"Markdown already exists for {arxiv_id}. Skipping conversion.")
                 with open(markdown_path, "r", encoding="utf-8") as f:
-                    doc = f.read()
+                    markdown_content = f.read()
             else:
                 markdown_content = convert_doc2md(
                     arxiv_id, converter, input_dir=download_dir)
-                doc = clean_docling_output(markdown_content)
+                markdown_content = clean_docling_output(markdown_content)
                 with open(markdown_path, "w", encoding="utf-8") as f:
-                    f.write(doc)
+                    f.write(markdown_content)
 
-            chunked_docs = chunk_markdown_file(
-                doc, metadata_map.get(arxiv_id, {}))
-            current_batch.extend(chunked_docs)
-            logging.info(f"Successfully converted and cleaned {arxiv_id}.")
+            parent_splitter = MarkdownHeaderTextSplitter(
+                headers_to_split_on=[("##", "section")]
+            )
+            parent_docs = parent_splitter.split_text(markdown_content)
 
-            # FLUSH TO QDRANT WHEN BATCH IS FULL
-            if len(current_batch) >= BATCH_SIZE:
-                logging.info(
-                    f"Upserting batch of {len(current_batch)} documents to Qdrant...")
-                vector_store.add_documents(current_batch)
-                current_batch = []  # Clear memory for the next batch
+            for doc in parent_docs:
+                parent_id = str(uuid.uuid4())
+                doc.metadata["parent_id"] = parent_id
+
+                # Save to the docstore
+                retriever.docstore.mset([(parent_id, doc)])
+
+                children = chunk_markdown_file(
+                    markdown_content=doc.page_content,
+                    additional_metadata={
+                        **doc.metadata, **metadata_map[arxiv_id]},
+                    parent_id=parent_id
+                )
+
+                retriever.vectorstore.add_documents(children)
 
         except Exception as e:
             logging.error(f"Failed to process {arxiv_id}: {e}")
             continue
-
-    # FLUSH ANY REMAINING DOCUMENTS
-    if current_batch:
-        logging.info(
-            f"Upserting final batch of {len(current_batch)} documents to Qdrant...")
-        vector_store.add_documents(current_batch)
 
     logging.info("ETL Pipeline completed successfully.")
 
@@ -86,6 +100,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="ETL pipeline for fetching, converting, and loading arXiv papers.",
         usage="python pipeline.py [options] paper_id1 paper_id2 ...")
+    parser.add_argument("--redis_url", type=str,
+                        default="redis://:arxiv-codegen-pw@localhost:6379", help="URL of the Redis instance.")
     parser.add_argument("--qdrant_url", type=str,
                         default="http://localhost:6333", help="URL of the Qdrant instance.")
     parser.add_argument("--qdrant_collection_name", type=str, default="saved_papers",

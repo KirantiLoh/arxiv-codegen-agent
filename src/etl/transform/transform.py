@@ -77,12 +77,11 @@ def clean_docling_output(markdown_text: str) -> str:
     return markdown_text.strip()
 
 
-def chunk_markdown_file(markdown_content: str, additional_metadata: dict) -> list[Document]:
+def chunk_markdown_file(markdown_content: str, parent_id: str, additional_metadata: dict) -> list[Document]:
     # 1. Split by Headers (Semantic Boundaries)
     header_splitter = MarkdownHeaderTextSplitter(
         headers_to_split_on=[
-            ("#", "Title"), ("##", "Section"), ("###",
-                                                "Subsection"), ("####", "Subsubsection")
+            ("###", "subsection"), ("####", "subsubsection")
         ]
     )
     header_chunks = header_splitter.split_text(markdown_content)
@@ -125,8 +124,8 @@ def chunk_markdown_file(markdown_content: str, additional_metadata: dict) -> lis
         # 3. Chunk the remaining text safely
         text_metadata = merged_metadata.copy()
         text_metadata["doc_type"] = "text"
+        text_metadata["parent_id"] = parent_id
 
-        # FIX: Only create text documents if there's actual text left
         # This prevents creating empty chunks if the section was just a table
         clean_text = text_content.replace(
             "[Table omitted, see table chunks]", "").strip()
@@ -166,7 +165,7 @@ if __name__ == "__main__":
                     f"Time taken to process {filename}: {end - start:.2f} seconds")
             print(f"Cleaning the markdown content for {filename}...")
             refined_doc = clean_docling_output(doc)
-            chunked_docs = chunk_markdown_file(refined_doc, additional_metadata={
+            chunked_docs = chunk_markdown_file(refined_doc, "parent_id", additional_metadata={
                 "source_file": filename, "source_path": output_file_path})
             print(chunked_docs)
             with open(f"{output_dir}/{filename[:-4]}.md", "w", encoding="utf-8") as f:

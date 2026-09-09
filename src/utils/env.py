@@ -15,3 +15,7 @@ class EnvConfig:
         self.SPARSE_VECTOR_NAME = os.getenv(
             "SPARSE_VECTOR_NAME", "saved_papers_sparse_bm25")
         self.EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", 384))
+        self.LANGSMITH_TRACING = os.getenv(
+            "LANGSMITH_TRACING", "false") == "true"
+        self.LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
+        self.REDIS_URL = os.getenv("REDIS_URL", "")
