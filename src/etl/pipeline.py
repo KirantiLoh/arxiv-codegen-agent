@@ -69,7 +69,7 @@ def pipeline(paper_ids, download_dir, markdown_dir, redis_url="redis://:arxiv-co
                     f.write(markdown_content)
 
             parent_splitter = MarkdownHeaderTextSplitter(
-                headers_to_split_on=[("##", "section")]
+                headers_to_split_on=[("##", "section"), ("###", "subsection")]
             )
             parent_docs = parent_splitter.split_text(markdown_content)
 
