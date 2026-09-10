@@ -38,7 +38,7 @@ def pipeline(paper_ids, download_dir, markdown_dir, redis_url="redis://:arxiv-co
         ).EMBEDDING_MODEL, qdrant_collection_name, 384, f"{qdrant_collection_name}_sparse_bm25"
     )
 
-    bytestore = RedisStore(redis_url=redis_url)
+    bytestore = RedisStore(redis_url=redis_url, namespace="doc")
 
     docstore = create_kv_docstore(bytestore)
 
