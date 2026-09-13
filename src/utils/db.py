@@ -1,5 +1,5 @@
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_qdrant import QdrantVectorStore, FastEmbedSparse
+from langchain_qdrant import QdrantVectorStore, FastEmbedSparse, RetrievalMode
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, SparseIndexParams, SparseVectorParams, VectorParams
 import torch
@@ -38,4 +38,5 @@ def init_qdrant_vector_store(client: QdrantClient, embedding_model: str, collect
         embedding=embedding,
         sparse_embedding=sparse_embedding,
         sparse_vector_name=sparse_vector_name,
+        retrieval_mode=RetrievalMode.HYBRID,
     )
