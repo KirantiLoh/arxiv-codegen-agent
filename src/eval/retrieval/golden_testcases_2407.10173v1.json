@@ -1,0 +1,212 @@
+[
+    {
+        "id": 1,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "What is the optimization objective function of StatuScale defined in Eq. (1)?",
+        "expected_answer": "$\\min \\sum_{m \\in M} P_m / A_M + \\sum_{p \\in P} R_p / A_P + \\omega^t \\sum_{m \\in M} RT_m / A_M$, subject to $P_m \\ge 1$, $R_p \\ge 0$, $RT_m \\ge 0$, $A_P \\ge A_M \\ge 0$."
+    },
+    {
+        "id": 2,
+        "chapter": "Chapter 3",
+        "category": "reasoning",
+        "question": "Why does StatuScale select LightGBM as its Load Predictor instead of heavyweight machine learning or deep learning models?",
+        "expected_answer": "StatuScale adopts LightGBM to avoid heavyweight machine learning or deep learning methods, enabling efficient predictions and supporting rapid scaling decisions."
+    },
+    {
+        "id": 3,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "How is the piecewise linear resistance line $f(t)$ calculated in Eq. (2)?",
+        "expected_answer": "$f(t) = kt + b + \\lambda c_v$, where $k$ is the slope, $t$ is time, $b$ is the constant term, $c_v$ is the coefficient of variation (ratio of standard deviation to mean), and $\\lambda$ is the adjustment parameter."
+    },
+    {
+        "id": 4,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "What equation defines the Mean Square Error $\\epsilon$ minimized during polynomial fitting for the resistance line in StatuScale?",
+        "expected_answer": "$\\epsilon = \\sum_{i=0}^{m-1}(b + k t_i - Load_i)^2$."
+    },
+    {
+        "id": 5,
+        "chapter": "Chapter 3",
+        "category": "factual",
+        "question": "In the parameter tuning experiments for the Load Status Detector, which value of $\\lambda$ produces the maximum F-Measure?",
+        "expected_answer": "$\\lambda = 30$."
+    },
+    {
+        "id": 6,
+        "chapter": "Chapter 3",
+        "category": "code",
+        "question": "What inputs are provided to the input layer of the BP neural network used for parameter self-tuning in A-PID?",
+        "expected_answer": "Target value ($CPU_{tar}$), actual output value ($CPU_{obs}$), error value ($e(t)$), and bias term."
+    },
+    {
+        "id": 7,
+        "chapter": "Chapter 3",
+        "category": "factual",
+        "question": "How many nodes and what activation functions are used in the hidden and output layers of the BP network in A-PID?",
+        "expected_answer": "The hidden layer contains 5 neural nodes with tanh activation function, while the output layer uses the sigmoid activation function to output PID parameters $K_p$, $K_i$, and $K_d$."
+    },
+    {
+        "id": 8,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "How is the transformed CPU utilization $S_t$ calculated in Eq. (5) when current CPU utilization $C_t$ is greater than or equal to $CPU_{tar}$?",
+        "expected_answer": "$S_t = K^{C_t - CPU_{tar}} - 1$."
+    },
+    {
+        "id": 9,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "What formula determines the replica adjustment quantity $R_n$ during horizontal scaling in StatuScale?",
+        "expected_answer": "$R_n = \\max(\\delta \\cdot R_c, 1)$, where $\\delta$ is a configurable percentage (defaulting to 10%) and $R_c$ is the current replica count."
+    },
+    {
+        "id": 10,
+        "chapter": "Chapter 3",
+        "category": "factual",
+        "question": "What duration is configured for the cooling-off period in StatuScale to regulate resource scaling?",
+        "expected_answer": "5 minutes."
+    },
+    {
+        "id": 11,
+        "chapter": "Chapter 3",
+        "category": "mathematical",
+        "question": "How is vertical quota reduction expressed over time $t$ using the decay rate $\\beta$ in Eq. (7)?",
+        "expected_answer": "$V(t) = V \\cdot k \\beta^{t-1}$, where $0 < \\beta < 1$, $k > 1$ is a constant, and $V$ is the initial resource value."
+    },
+    {
+        "id": 12,
+        "chapter": "Chapter 3",
+        "category": "code",
+        "question": "What metrics tools are integrated to collect and aggregate cluster resource metric data for StatuScale?",
+        "expected_answer": "Kubernetes Metric Server and Prometheus."
+    },
+    {
+        "id": 13,
+        "chapter": "Chapter 3",
+        "category": "code",
+        "question": "What is the overall time complexity of the StatuScale algorithm?",
+        "expected_answer": "$O(n + \\max(Ndm, ah^2))$, where $n$ is sample count in time window, $N$ is tree count, $d$ is tree depth, $m$ is feature count, $a$ is input-output connection count, and $h$ is hidden layer count."
+    },
+    {
+        "id": 14,
+        "chapter": "Chapter 4",
+        "category": "factual",
+        "question": "What is the execution interval for resource scaling in StatuScale's performance evaluations?",
+        "expected_answer": "Resource scaling is performed every 20 seconds."
+    },
+    {
+        "id": 15,
+        "chapter": "Chapter 4",
+        "category": "factual",
+        "question": "Which two microservice applications were deployed to validate StatuScale's performance?",
+        "expected_answer": "Sock-Shop and Hotel-Reservation."
+    },
+    {
+        "id": 16,
+        "chapter": "Chapter 4",
+        "category": "factual",
+        "question": "What cluster trace dataset was used as input for workload simulation in the evaluations?",
+        "expected_answer": "Alibaba Cluster dataset (cluster-trace-v2018)."
+    },
+    {
+        "id": 17,
+        "chapter": "Chapter 4",
+        "category": "mathematical",
+        "question": "How is the under-provisioning accuracy metric $a_U$ defined in Eq. (8)?",
+        "expected_answer": "$a_U = \\frac{1}{T \\cdot R} \\sum_{t=1}^{T} (d_t - s_t)^+ \\Delta t$, where $T$ is experiment duration, $R$ is available resources, $d_t$ is resource demand, and $s_t$ is resource supply."
+    },
+    {
+        "id": 18,
+        "chapter": "Chapter 4",
+        "category": "reasoning",
+        "question": "Why is standard R-squared metric inapplicable for evaluating supply-demand curve similarity in the study, prompting the use of Dynamic Time Warping (DTW)?",
+        "expected_answer": "Because data collected from Locust (loads) and Prometheus (resource usage) experience inconsistent sample sizes and time drift, making direct point-to-point comparison impossible."
+    },
+    {
+        "id": 19,
+        "chapter": "Chapter 4",
+        "category": "factual",
+        "question": "In the Sock-Shop experiment, what average response time was achieved by StatuScale compared to GBMScaler?",
+        "expected_answer": "StatuScale achieved 63.5 ms, whereas GBMScaler achieved 68.5 ms (a 7.30% improvement)."
+    },
+    {
+        "id": 20,
+        "chapter": "Chapter 4",
+        "category": "factual",
+        "question": "What correlation factor score did StatuScale achieve in the Sock-Shop evaluation compared to Showar and Hyscale?",
+        "expected_answer": "StatuScale achieved a correlation factor of 0.59, compared to 0.54 for Showar and 0.50 for Hyscale."
+    },
+    {
+        "id": 21,
+        "chapter": "Chapter 4",
+        "category": "reasoning",
+        "question": "Why did horizontal-only scaling (StatuScale_H) result in a lower CPU utilization rate (56.5%) compared to complete StatuScale (79.5%)?",
+        "expected_answer": "Because horizontal scaling allocates full replica pods even when demand increases slightly, resulting in coarse-grained allocation and wasted resource overhead."
+    },
+    {
+        "id": 22,
+        "chapter": "Chapter 1",
+        "category": "factual",
+        "question": "What improvement range in average response time does StatuScale achieve on Sock-Shop and Hotel-Reservation applications?",
+        "expected_answer": "8.59% to 12.34% improvement in Sock-Shop and 7.30% to 11.97% in Hotel-Reservation."
+    },
+    {
+        "id": 23,
+        "chapter": "Chapter 1",
+        "category": "factual",
+        "question": "What container orchestration platform is used to deploy and validate StatuScale?",
+        "expected_answer": "Kubernetes."
+    },
+    {
+        "id": 24,
+        "chapter": "Chapter 1",
+        "category": "reasoning",
+        "question": "How does StatuScale select vertical scaling strategies when microservice load is stable versus when it is unstable?",
+        "expected_answer": "When load is stable (below resistance line), proactive machine learning prediction (LightGBM) is used; when unstable (above resistance line), a conservative A-PID controller is used."
+    },
+    {
+        "id": 25,
+        "chapter": "Chapter 2",
+        "category": "reasoning",
+        "question": "Why do static threshold-based scaling strategies like Hyscale lead to SLO violations in highly variable workload environments?",
+        "expected_answer": "Predefined static thresholds cannot adapt to environmental changes or workload bursts, resulting in low resource utilization and delayed scaling responses."
+    },
+    {
+        "id": 26,
+        "chapter": "Chapter 2",
+        "category": "reasoning",
+        "question": "What is a key weakness of pure feedback control theory approaches (e.g., SHOWAR, PEMA) when responding to workload patterns?",
+        "expected_answer": "They lack understanding and learning capabilities of application load characteristics, preventing them from anticipating specific application load patterns."
+    },
+    {
+        "id": 27,
+        "chapter": "Chapter 2",
+        "category": "reasoning",
+        "question": "What major challenge do learning-based elastic scaling strategies encounter during early execution or when application load characteristics shift?",
+        "expected_answer": "They suffer from low accuracy initially due to lack of historical data, and retraining models when load characteristics change incurs extremely high overhead."
+    },
+    {
+        "id": 28,
+        "chapter": "Chapter 2",
+        "category": "factual",
+        "question": "How does StatuScale's decision tree learning model differ from conventional control theory-based auto-scalers in Table 1?",
+        "expected_answer": "StatuScale introduces a lightweight decision tree learning model (LightGBM) capable of rapid retraining to extract application load features and dynamic adaptation."
+    },
+    {
+        "id": 29,
+        "chapter": "Chapter 5",
+        "category": "factual",
+        "question": "What limitation of StatuScale do the authors identify regarding microservice call architecture for future research?",
+        "expected_answer": "StatuScale operates on individual microservices and does not currently incorporate the call dependency graph of microservices."
+    },
+    {
+        "id": 30,
+        "chapter": "Chapter 2",
+        "category": "reasoning",
+        "question": "Why is stock price trend line analysis adapted into StatuScale's load status detector?",
+        "expected_answer": "To perform load trend analysis for detecting unexpected workload bursts, enabling rapid resource allocation before performance degradation occurs."
+    }
+]
