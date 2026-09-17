@@ -16,6 +16,8 @@ from utils.db import init_qdrant_vector_store
 from utils.env import EnvConfig
 
 TOP_K = 5
+# ARXIV_ID = "1706.03762v7"
+ARXIV_ID = "2407.10173v1"
 
 # ==============================================================================
 # 1. INITIALIZE LOCAL EMBEDDING MODEL (The "Relevance Judger")
@@ -100,7 +102,7 @@ def compute_mrr(expected_answer: str, chunks: List[str]) -> float:
 # ==============================================================================
 # 3. LOAD DATA & RETRIEVER
 # ==============================================================================
-with open("eval/retrieval/golden_testcases_2407.10173v1.json", "r", encoding="utf-8") as f:
+with open(f"eval/retrieval/golden_testcases_{ARXIV_ID}.json", "r", encoding="utf-8") as f:
     test_cases_data = json.load(f)
 
 client = QdrantClient(url=env_config.QDRANT_URL)
@@ -172,7 +174,7 @@ for i, data in enumerate(test_cases_data):
 # ==============================================================================
 output_dir = "eval/retrieval"
 os.makedirs(output_dir, exist_ok=True)
-csv_path = f"{output_dir}/final_classical_ir_results.csv"
+csv_path = f"{output_dir}/final_classical_ir_results_{ARXIV_ID}.csv"
 
 with open(csv_path, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=results[0].keys())

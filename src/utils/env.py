@@ -19,3 +19,5 @@ class EnvConfig:
             "LANGSMITH_TRACING", "false") == "true"
         self.LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
         self.REDIS_URL = os.getenv("REDIS_URL", "")
+        self.LLM7_API_KEY = os.getenv("LLM7_API_KEY", "")
+        self.GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")

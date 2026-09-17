@@ -1,0 +1,212 @@
+[
+    {
+        "id": 1,
+        "chapter": "Section 3",
+        "category": "factual",
+        "question": "How many identical layers compose the encoder stack in the Transformer model?",
+        "expected_answer": "The encoder is composed of a stack of N = 6 identical layers."
+    },
+    {
+        "id": 2,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "What is the output dimension (d_model) produced by all sub-layers and embedding layers in the Transformer?",
+        "expected_answer": "All sub-layers and embedding layers produce outputs of dimension d_model = 512."
+    },
+    {
+        "id": 3,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "What are the three sub-layers in each decoder layer of the Transformer?",
+        "expected_answer": "Each decoder layer contains a masked multi-head self-attention mechanism, a multi-head attention over the encoder stack output, and a position-wise fully connected feed-forward network."
+    },
+    {
+        "id": 4,
+        "chapter": "Section 3",
+        "category": "reasoning",
+        "question": "Why is the self-attention sub-layer in the decoder stack masked?",
+        "expected_answer": "Masking prevents positions from attending to subsequent positions, preserving the auto-regressive property so predictions for position i depend only on known outputs at positions less than i."
+    },
+    {
+        "id": 5,
+        "chapter": "Section 3",
+        "category": "mathematical",
+        "question": "What is the mathematical formula for Scaled Dot-Product Attention in matrix form?",
+        "expected_answer": "Attention(Q, K, V) = softmax(Q K^T / \\sqrt{d_k}) V."
+    },
+    {
+        "id": 6,
+        "chapter": "Section 3",
+        "category": "reasoning",
+        "question": "Why do the authors scale the dot products by 1 / \\sqrt{d_k} in Scaled Dot-Product Attention?",
+        "expected_answer": "For large values of d_k, dot products grow large in magnitude, pushing the softmax function into regions with extremely small gradients; scaling by 1 / \\sqrt{d_k} counteracts this effect."
+    },
+    {
+        "id": 7,
+        "chapter": "Section 3",
+        "category": "mathematical",
+        "question": "In the multi-head attention mechanism with h = 8 parallel heads and d_model = 512, what are the dimensions d_k and d_v?",
+        "expected_answer": "d_k = d_v = d_model / h = 64."
+    },
+    {
+        "id": 8,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "What parameter projection matrix dimensions are used for queries, keys, values, and the multi-head output in Multi-Head Attention?",
+        "expected_answer": "Projection matrices W_i^Q \\in \\mathbb{R}^{d_{model} \\times d_k}, W_i^K \\in \\mathbb{R}^{d_{model} \\times d_k}, W_i^V \\in \\mathbb{R}^{d_{model} \\times d_v}, and W^O \\in \\mathbb{R}^{h d_v \\times d_{model}}."
+    },
+    {
+        "id": 9,
+        "chapter": "Section 3",
+        "category": "factual",
+        "question": "What are the three distinct ways Multi-Head Attention is applied in the Transformer model?",
+        "expected_answer": "1) Encoder-decoder attention where queries come from the previous decoder layer and keys/values come from the encoder output; 2) Encoder self-attention where queries, keys, and values come from the previous encoder layer; 3) Decoder self-attention where positions attend to preceding decoder positions."
+    },
+    {
+        "id": 10,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "How is the prevention of leftward information flow implemented inside scaled dot-product attention for decoder self-attention?",
+        "expected_answer": "By masking out (setting to -\\infty) all values in the input of the softmax corresponding to illegal connections."
+    },
+    {
+        "id": 11,
+        "chapter": "Section 3",
+        "category": "mathematical",
+        "question": "What is the mathematical equation for the position-wise feed-forward network (FFN)?",
+        "expected_answer": "FFN(x) = max(0, x W_1 + b_1) W_2 + b_2."
+    },
+    {
+        "id": 12,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "What are the inner-layer dimensionality (d_ff) and input/output dimensionality (d_model) of the position-wise feed-forward network?",
+        "expected_answer": "Inner-layer dimensionality d_ff = 2048 and input/output dimensionality d_model = 512."
+    },
+    {
+        "id": 13,
+        "chapter": "Section 3",
+        "category": "factual",
+        "question": "How else can the position-wise feed-forward network be described besides two linear transformations with a ReLU activation?",
+        "expected_answer": "As two convolutions with kernel size 1."
+    },
+    {
+        "id": 14,
+        "chapter": "Section 3",
+        "category": "code",
+        "question": "What multiplication factor is applied to the weights in the embedding layers of the Transformer?",
+        "expected_answer": "In the embedding layers, the shared weights are multiplied by \\sqrt{d_{model}}."
+    },
+    {
+        "id": 15,
+        "chapter": "Section 3",
+        "category": "mathematical",
+        "question": "What are the trigonometric formulas used for calculating Positional Encodings at even (2i) and odd (2i+1) dimensions?",
+        "expected_answer": "PE_{(pos, 2i)} = \\sin(pos / 10000^{2i / d_{model}}) and PE_{(pos, 2i+1)} = \\cos(pos / 10000^{2i / d_{model}})."
+    },
+    {
+        "id": 16,
+        "chapter": "Section 3",
+        "category": "reasoning",
+        "question": "Why did the authors choose sinusoidal positional encodings over learned positional embeddings?",
+        "expected_answer": "Because sinusoidal encodings may allow the model to extrapolate to sequence lengths longer than the ones encountered during training."
+    },
+    {
+        "id": 17,
+        "chapter": "Section 4",
+        "category": "factual",
+        "question": "What is the per-layer computational complexity for a Self-Attention layer compared to a Recurrent layer?",
+        "expected_answer": "Self-Attention complexity per layer is O(n^2 \\cdot d), whereas Recurrent layer complexity is O(n \\cdot d^2)."
+    },
+    {
+        "id": 18,
+        "chapter": "Section 4",
+        "category": "mathematical",
+        "question": "What is the minimum number of sequential operations required for Self-Attention layers versus Recurrent layers?",
+        "expected_answer": "Self-Attention requires O(1) sequential operations, whereas Recurrent layers require O(n) sequential operations."
+    },
+    {
+        "id": 19,
+        "chapter": "Section 4",
+        "category": "mathematical",
+        "question": "What is the maximum path length between any two input and output positions in a Self-Attention layer versus a dilated Convolutional layer?",
+        "expected_answer": "Maximum path length is O(1) for Self-Attention and O(\\log_k(n)) for dilated Convolutional layers."
+    },
+    {
+        "id": 20,
+        "chapter": "Section 4",
+        "category": "reasoning",
+        "question": "Under what condition are self-attention layers faster in computational complexity than recurrent layers?",
+        "expected_answer": "Self-attention layers are faster than recurrent layers when the sequence length n is smaller than the representation dimensionality d."
+    },
+    {
+        "id": 21,
+        "chapter": "Section 4",
+        "category": "code",
+        "question": "How can self-attention be restricted to handle very long sequences, and what is the resulting maximum path length?",
+        "expected_answer": "By restricting self-attention to considering only a neighborhood of size r in the input sequence centered around the output position, which increases the maximum path length to O(n/r)."
+    },
+    {
+        "id": 22,
+        "chapter": "Section 1",
+        "category": "factual",
+        "question": "What BLEU scores did the Transformer achieve on the WMT 2014 English-to-German and English-to-French translation tasks?",
+        "expected_answer": "28.4 BLEU on English-to-German and 41.8 BLEU on English-to-French."
+    },
+    {
+        "id": 23,
+        "chapter": "Section 2",
+        "category": "reasoning",
+        "question": "How does the number of operations required to relate signals from two arbitrary positions grow in ConvS2S and ByteNet relative to position distance?",
+        "expected_answer": "The number of operations grows linearly for ConvS2S and logarithmically for ByteNet."
+    },
+    {
+        "id": 24,
+        "chapter": "Section 5",
+        "category": "factual",
+        "question": "What hardware setup and training steps were used for the base Transformer model versus the big Transformer model?",
+        "expected_answer": "The base model was trained on 8 NVIDIA P100 GPUs for 100,000 steps (12 hours), while the big model was trained for 300,000 steps (3.5 days)."
+    },
+    {
+        "id": 25,
+        "chapter": "Section 5",
+        "category": "code",
+        "question": "What hyperparameter settings were configured for the Adam optimizer during model training?",
+        "expected_answer": "\\beta_1 = 0.9, \\beta_2 = 0.98, and \\epsilon = 10^{-9}."
+    },
+    {
+        "id": 26,
+        "chapter": "Section 5",
+        "category": "mathematical",
+        "question": "What equation defines the learning rate schedule over training steps?",
+        "expected_answer": "lrate = d_{model}^{-0.5} \\cdot \\min(step\\_num^{-0.5}, step\\_num \\cdot warmup\\steps^{-1.5}) with warmup\\steps = 4000."
+    },
+    {
+        "id": 27,
+        "chapter": "Section 5",
+        "category": "code",
+        "question": "What residual dropout rate and label smoothing value were applied during training?",
+        "expected_answer": "A residual dropout rate P{drop} = 0.1 for the base model and a label smoothing value \\epsilon{ls} = 0.1."
+    },
+    {
+        "id": 28,
+        "chapter": "Section 6",
+        "category": "code",
+        "question": "What beam search configuration (beam size and length penalty \\alpha) was used during inference for translation?",
+        "expected_answer": "A beam size of 4 and length penalty \\alpha = 0.6."
+    },
+    {
+        "id": 29,
+        "chapter": "Section 6",
+        "category": "factual",
+        "question": "What F1 score did the 4-layer Transformer achieve on Section 23 of the WSJ constituency parsing task in the semi-supervised setting?",
+        "expected_answer": "An F1 score of 92.7."
+    },
+    {
+        "id": 30,
+        "chapter": "Section 7",
+        "category": "factual",
+        "question": "Where is the official codebase repository for training and evaluating the Transformer models available?",
+        "expected_answer": "[https://github.com/tensorflow/tensor2tensor](https://github.com/tensorflow/tensor2tensor)."
+    }
+]

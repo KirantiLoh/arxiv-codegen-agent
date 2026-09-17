@@ -27,6 +27,7 @@ def init_converter():
     """
     pipeline_options = PdfPipelineOptions()
     pipeline_options.do_code_enrichment = True
+    pipeline_options.do_formula_enrichment = True
     pipeline_options.do_ocr = False
 
     pipeline_options.heading_hierarchy_options = HeadingHierarchyOptions(
