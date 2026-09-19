@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, FileText, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { UploadPdfModal } from '@/components/modals/UploadPdfModal';
+import { AddProjectModal } from '@/components/modals/AddProjectModal';
 
 export const Route = createFileRoute('/projects/')({
   component: Projects,
@@ -75,7 +75,7 @@ function Projects() {
         ))}
       </div>
 
-      <UploadPdfModal open={isUploadOpen} onOpenChange={setIsUploadOpen} />
+      <AddProjectModal open={isUploadOpen} onOpenChange={setIsUploadOpen} />
     </div>
   );
 }
