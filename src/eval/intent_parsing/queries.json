@@ -1,0 +1,162 @@
+[
+{
+"id": 1,
+"query": "What is the computational complexity per layer of self-attention for sequence length n and dimension d?",
+"intent": "qna",
+"sub_intent": "factual_knowledge",
+"entities": ["self-attention", "computational complexity", "sequence length", "dimension"],
+"explanation": "The user is asking a theoretical/factual question regarding the asymptotic time complexity of an algorithm."
+},
+{
+"id": 2,
+"query": "Write a PyTorch implementation of Scaled Dot-Product Attention.",
+"intent": "dev",
+"sub_intent": "code_generation",
+"entities": ["PyTorch", "Scaled Dot-Product Attention"],
+"explanation": "The user is requesting code generation for a specific deep learning mechanism using PyTorch."
+},
+{
+"id": 3,
+"query": "Why does the Transformer scale dot products by 1 / sqrt(d_k) in the attention calculation?",
+"intent": "qna",
+"sub_intent": "conceptual_explanation",
+"entities": ["Transformer", "dot products", "d_k", "attention"],
+"explanation": "The user is seeking an explanation for a design choice and mathematical reasoning within model architecture."
+},
+{
+"id": 4,
+"query": "How do I fix 'RuntimeError: Expected target size, got tensor of shape' when computing cross entropy loss in PyTorch?",
+"intent": "dev",
+"sub_intent": "debugging",
+"entities": ["RuntimeError", "cross entropy loss", "PyTorch", "tensor shape"],
+"explanation": "The user is providing an explicit error message and asking for debugging assistance in code."
+},
+{
+"id": 5,
+"query": "What BLEU score did the big Transformer model achieve on the WMT 2014 English-to-German benchmark?",
+"intent": "qna",
+"sub_intent": "fact_retrieval",
+"entities": ["BLEU score", "Transformer big", "WMT 2014 English-to-German"],
+"explanation": "The query asks for a specific empirical result metric from a benchmark."
+},
+{
+"id": 6,
+"query": "How do I implement a custom warmup learning rate scheduler in PyTorch matching the formula lrate = d_model^(-0.5) * min(step^(-0.5), step * warmup_steps^(-1.5))?",
+"intent": "dev",
+"sub_intent": "code_generation",
+"entities": ["PyTorch", "learning rate scheduler", "warmup", "d_model"],
+"explanation": "The user wants executable code implementing a specific mathematical learning rate schedule."
+},
+{
+"id": 7,
+"query": "What is the main difference between self-attention and recurrent neural network layers regarding sequential operations?",
+"intent": "qna",
+"sub_intent": "comparative_analysis",
+"entities": ["self-attention", "recurrent neural network", "sequential operations"],
+"explanation": "The user is asking for a comparison between two neural network layer types."
+},
+{
+"id": 8,
+"query": "How to pass a causal mask to torch.nn.MultiheadAttention in PyTorch 2.0?",
+"intent": "dev",
+"sub_intent": "api_usage",
+"entities": ["torch.nn.MultiheadAttention", "causal mask", "PyTorch 2.0"],
+"explanation": "The user seeks instructions on how to use a specific framework function/API."
+},
+{
+"id": 9,
+"query": "Why is masking necessary in the self-attention sub-layers of the Transformer decoder stack?",
+"intent": "qna",
+"sub_intent": "design_rationale",
+"entities": ["masking", "self-attention", "Transformer decoder"],
+"explanation": "The query asks for the purpose/rationale behind a structural component in an autoregressive decoder."
+},
+{
+"id": 10,
+"query": "How can I fix 'json.decoder.JSONDecodeError: Invalid escape character in string' in Python when parsing file paths?",
+"intent": "dev",
+"sub_intent": "debugging",
+"entities": ["json.decoder.JSONDecodeError", "Python", "file paths", "escape character"],
+"explanation": "The user asks for code troubleshooting for a string escaping issue during JSON parsing."
+},
+{
+"id": 11,
+"query": "What are sinusoidal positional encodings and how do they allow extrapolation to longer sequence lengths?",
+"intent": "qna",
+"sub_intent": "conceptual_explanation",
+"entities": ["sinusoidal positional encodings", "extrapolation", "sequence length"],
+"explanation": "The user asks a conceptual question about positional encoding properties."
+},
+{
+"id": 12,
+"query": "Write a Python script using re.sub to sanitize raw JSON strings containing single backslashes before running json.loads().",
+"intent": "dev",
+"sub_intent": "code_generation",
+"entities": ["Python", "re.sub", "JSON string", "json.loads"],
+"explanation": "The user is requesting a functional Python script using regular expressions for data parsing."
+},
+{
+"id": 13,
+"query": "How many parallel attention heads and total layers are used in the Transformer base model architecture?",
+"intent": "qna",
+"sub_intent": "fact_retrieval",
+"entities": ["attention heads", "layers", "Transformer base model"],
+"explanation": "The query asks for specific hyperparameter values from an architectural configuration."
+},
+{
+"id": 14,
+"query": "Refactor this JAX Transformer encoder block to use jax.vmap for batched processing.",
+"intent": "dev",
+"sub_intent": "refactoring",
+"entities": ["JAX", "Transformer encoder", "jax.vmap", "batched processing"],
+"explanation": "The user wants existing code modified to utilize specific framework optimization patterns."
+},
+{
+"id": 15,
+"query": "What hyperparameter settings were used for the Adam optimizer during Transformer model training?",
+"intent": "qna",
+"sub_intent": "fact_retrieval",
+"entities": ["hyperparameters", "Adam optimizer", "Transformer training"],
+"explanation": "The user asks for factual information regarding optimizer hyperparameter values."
+},
+{
+"id": 16,
+"query": "How do I enable torch.cuda.amp.autocast for mixed precision training in a custom PyTorch training loop?",
+"intent": "dev",
+"sub_intent": "performance_optimization",
+"entities": ["torch.cuda.amp.autocast", "mixed precision", "PyTorch training loop"],
+"explanation": "The user asks for implementation details on optimizing GPU training performance in code."
+},
+{
+"id": 17,
+"query": "What is the purpose of label smoothing in neural machine translation models?",
+"intent": "qna",
+"sub_intent": "conceptual_explanation",
+"entities": ["label smoothing", "neural machine translation"],
+"explanation": "The user seeks an explanation of a machine learning regularization technique."
+},
+{
+"id": 18,
+"query": "Create a HuggingFace Dataset preprocessing pipeline that tokenize text using AutoTokenizer with truncation and dynamic padding.",
+"intent": "dev",
+"sub_intent": "framework_integration",
+"entities": ["HuggingFace Dataset", "AutoTokenizer", "truncation", "dynamic padding"],
+"explanation": "The user requests code to set up a data pipeline using HuggingFace libraries."
+},
+{
+"id": 19,
+"query": "How does multi-head attention differ from performing a single attention function with d_model dimensions?",
+"intent": "qna",
+"sub_intent": "comparative_analysis",
+"entities": ["multi-head attention", "single attention", "d_model"],
+"explanation": "The query asks for a conceptual comparison between two attention approaches."
+},
+{
+"id": 20,
+"query": "Write a C++ CUDA kernel for computing matrix multiplication of query and key matrices in attention mechanism.",
+"intent": "dev",
+"sub_intent": "code_generation",
+"entities": ["C++", "CUDA kernel", "matrix multiplication", "attention mechanism"],
+"explanation": "The user is requesting low-level C++/CUDA code implementation."
+}
+]
