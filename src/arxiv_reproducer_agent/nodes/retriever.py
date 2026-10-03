@@ -6,7 +6,7 @@ from arxiv_reproducer_agent.state import AgentState
 def get_retriever_node(retriever: MultiVectorRetriever, top_k: int = 5):
 
     def retriever_node(state: AgentState) -> dict:
-        query = state["user_query"]
+        query = state.get("user_query", "")
         arxiv_id = state["arxiv_id"]
         
         try:

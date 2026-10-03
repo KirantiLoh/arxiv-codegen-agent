@@ -18,7 +18,7 @@ def clean_code_snippet(text: str) -> str:
     return text.strip()
 
 
-def get_developer_node(dir_path: str):
+def get_developer_node():
     llm = ChatOllama(
         model="qwen2.5-coder:3b",
         temperature=0,
@@ -63,11 +63,11 @@ def get_developer_node(dir_path: str):
 
         generated_code = clean_code_snippet(response.content)
 
-        # 3. WRITE FILE TO DISK
-        os.makedirs(dir_path, exist_ok=True)
-        file_path = os.path.join(dir_path, filename)
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(generated_code)
+        # # 3. WRITE FILE TO DISK
+        # os.makedirs(dir_path, exist_ok=True)
+        # file_path = os.path.join(dir_path, filename)
+        # with open(file_path, "w", encoding="utf-8") as f:
+        #     f.write(generated_code)
 
         # 4. Update State
         generated_files[filename] = generated_code

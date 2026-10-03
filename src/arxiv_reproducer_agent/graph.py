@@ -10,8 +10,14 @@ from arxiv_reproducer_agent.nodes.retriever import get_retriever_node
 from arxiv_reproducer_agent.nodes.architect import get_architect_node
 from arxiv_reproducer_agent.nodes.developer import get_developer_node
 from arxiv_reproducer_agent.nodes.validator import get_validator_node
+from arxiv_reproducer_agent.nodes.guide import get_guide_node
 from arxiv_reproducer_agent.state import AgentState
 
+def route_after_intent_parsing(state: AgentState):
+    if state.get("mode") == "dev":
+        return "architect"
+    else:
+        return "guide"
 
 def route_after_validation(state: AgentState):
     if state.get("contract_is_valid"):
@@ -41,15 +47,16 @@ def should_continue_developing(state: AgentState) -> str:
     return "end"
 
 
-def create_workflow(retriever: MultiVectorRetriever, dir_path: str, laya_router: Router, top_k=5):
+def create_workflow(retriever: MultiVectorRetriever, laya_router: Router, top_k=5):
     workflow = StateGraph(AgentState)
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     
     router_node = create_router_node(laya_router)
     retriever_node = get_retriever_node(retriever, top_k)
     architect_agent = get_architect_node()
-    developer_agent = get_developer_node(dir_path)
+    developer_agent = get_developer_node()
     validator_node = get_validator_node()
+    guide_agent = get_guide_node()
 
     # Define the states and transitions
     workflow.add_node("router", router_node)
@@ -57,11 +64,15 @@ def create_workflow(retriever: MultiVectorRetriever, dir_path: str, laya_router:
     workflow.add_node("architect", architect_agent)
     workflow.add_node("validate_contract", validator_node)
     workflow.add_node("developer", developer_agent)
+    workflow.add_node("guide", guide_agent)
 
     # Define transitions between states
     workflow.add_edge(START, "router")
     workflow.add_edge("router", "retriever")
-    workflow.add_edge("retriever", "architect")
+    workflow.add_conditional_edges("retriever", route_after_intent_parsing, {
+        "architect": "architect",
+        "guide": "guide",
+    })
     workflow.add_edge("architect","validate_contract")
     workflow.add_conditional_edges(
         "validate_contract",
@@ -76,9 +87,10 @@ def create_workflow(retriever: MultiVectorRetriever, dir_path: str, laya_router:
         should_continue_developing,
         {
             "continue": "developer",  # Loop back to generate the next file
-            "end": END               # All files generated, finish the graph
+            "end": "guide"               # All files generated, finish the graph
         }
     )
+    workflow.add_edge("guide", END)
 
     return workflow.compile()
 
@@ -109,7 +121,7 @@ if __name__ == "__main__":
     )
 
     router = Router(preload=True)
-    graph = create_workflow(retriever, ".", router, 2)
+    graph = create_workflow(retriever, router, 2)
     inputs = {
         "messages": [("user", "Implement the load testing script in locust python")], 
         "arxiv_id": "2407.10173v1",

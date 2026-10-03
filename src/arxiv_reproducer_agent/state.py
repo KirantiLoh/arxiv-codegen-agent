@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Literal, Optional
 from langgraph.graph import MessagesState
 
 
@@ -6,7 +6,7 @@ class AgentState(MessagesState):
     # --- Core Inputs ---
     arxiv_id: str
     user_query: Optional[str]
-    mode: Optional[str]  # "codegen" or "qa"
+    mode: Optional[Literal["qna"] | Literal["dev"]]
 
     # --- Persistent Memory (The "Contract" & Results) ---
     # The JSON output from Architect
