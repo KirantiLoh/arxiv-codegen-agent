@@ -27,6 +27,7 @@ dependencies = [
     "langchain-qdrant>=1.1.0",
     "langchain-text-splitters>=1.1.2",
     "langgraph>=1.2.11",
+    "langgraph-checkpoint-postgres>=3.1.2",
     "laya>=0.3.5",
     "lm-format-enforcer>=0.11.3",
     "ollama>=0.6.2",
@@ -36,6 +37,7 @@ dependencies = [
     "redis>=8.1.0",
     "ruff>=0.16.6",
     "sentence-transformers>=6.0.1",
+    "sqlmodel>=0.0.47",
     "transformers[torch]>=5.17.0",
     "uvicorn>=0.53.0",
 ]
