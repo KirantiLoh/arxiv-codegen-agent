@@ -1,109 +1,113 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { IncomingWSMessage } from "@/types";
 import { useAppStore } from "@/store/useAppStore";
 
 export function useWebSocket(url: string) {
     const wsRef = useRef<WebSocket | null>(null);
-    const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [isConnected, setIsConnected] = useState(false);
     const reconnectAttempts = useRef(0);
-    const MAX_RECONNECT_ATTEMPTS = 5;
-    const BASE_RECONNECT_DELAY = 1000;
+    const maxReconnectAttempts = 5;
 
-    const {
-        appendToken,
-        addFile,
-        appendToLastAgentMessage,
-        finalizeStreamingMessage,
-        setPdfHighlight
-    } = useAppStore();
+    useEffect(() => {
+        if (!url) {
+            console.warn("[WebSocket] No URL provided");
+            return;
+        }
 
-    const connect = useCallback(() => {
-        if (wsRef.current?.readyState === WebSocket.OPEN) return;
+        let isMounted = true;
 
-        try {
+        const connect = () => {
+            if (!isMounted) return;
+
+            console.log("[WebSocket] Connecting to:", url);
             const ws = new WebSocket(url);
             wsRef.current = ws;
 
             ws.onopen = () => {
-                console.log("[WebSocket] Connected to Gateway");
-                reconnectAttempts.current = 0;
+                if (isMounted) {
+                    console.log("[WebSocket] Connected successfully");
+                    setIsConnected(true);
+                    reconnectAttempts.current = 0;
+                }
             };
 
             ws.onmessage = (event) => {
+                if (!isMounted) return;
                 try {
                     const data = JSON.parse(event.data) as IncomingWSMessage;
+                    const actions = useAppStore.getState();
 
                     switch (data.type) {
+                        case "AGENT_OUTPUT":
+                            actions.appendToLastAgentMessage(data.content);
+                            actions.setAgentThought("");
+                            // Finalize streaming when we receive AGENT_OUTPUT
+                            // This re-enables the input field
+                            actions.finalizeStreamingMessage();
+                            break;
                         case "AGENT_THOUGHT":
-                            appendToLastAgentMessage(data.content);
+                            actions.setAgentThought(data.content);
                             break;
-
                         case "FILE_CREATED":
-                            addFile(data.fileName, data.language, data.path);
+                            actions.addFile(data.fileName, data.language, data.path);
                             break;
-
                         case "TOKEN_STREAM":
-                            appendToken(data.fileName, data.token);
+                            actions.appendToken(data.fileName, data.token);
                             break;
-
-                        case "PDF_HIGHLIGHT":
-                            setPdfHighlight(data.page, data.boundingBox);
-                            break;
-
                         default:
                             console.warn("[WebSocket] Unknown message type:", data);
                     }
                 } catch (error) {
-                    console.error("[WebSocket] Failed to parse message:", error, event.data);
+                    console.error("[WebSocket] Failed to parse message:", error);
                 }
             };
 
             ws.onclose = (event) => {
-                console.log(`[WebSocket] Closed. Code: ${event.code}, Reason: ${event.reason}`);
-                wsRef.current = null;
-                finalizeStreamingMessage();
+                if (isMounted) {
+                    console.log(`[WebSocket] Closed. Code: ${event.code}`);
+                    setIsConnected(false);
+                    wsRef.current = null;
+                    useAppStore.getState().finalizeStreamingMessage();
+                    useAppStore.getState().setAgentThought("");
 
-                if (reconnectAttempts.current < MAX_RECONNECT_ATTEMPTS) {
-                    const delay = BASE_RECONNECT_DELAY * Math.pow(2, reconnectAttempts.current);
-                    reconnectAttempts.current += 1;
-                    console.log(`[WebSocket] Reconnecting in ${delay}ms...`);
-
-                    reconnectTimeoutRef.current = setTimeout(() => {
-                        connect();
-                    }, delay);
-                } else {
-                    console.error("[WebSocket] Max reconnection attempts reached.");
+                    if (event.code !== 1000 && reconnectAttempts.current < maxReconnectAttempts) {
+                        const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 10000);
+                        reconnectAttempts.current += 1;
+                        console.log(`[WebSocket] Reconnecting in ${delay}ms...`);
+                        setTimeout(connect, delay);
+                    }
                 }
             };
 
             ws.onerror = (error) => {
                 console.error("[WebSocket] Error:", error);
             };
-        } catch (error) {
-            console.error("[WebSocket] Connection failed:", error);
-        }
-    }, [url, appendToken, addFile, appendToLastAgentMessage, finalizeStreamingMessage, setPdfHighlight]);
+        };
 
-    const sendMessage = useCallback((message: unknown) => {
-        if (wsRef.current?.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify(message));
-        } else {
-            console.warn("[WebSocket] Cannot send message: Socket is not open.");
-        }
-    }, []);
-
-    useEffect(() => {
         connect();
 
         return () => {
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current);
-            }
+            isMounted = false;
             if (wsRef.current) {
-                wsRef.current.close(1000, "Component unmounted");
+                console.log("[WebSocket] Cleanup: Closing socket");
+                wsRef.current.close(1000, "Component unmounting");
+                wsRef.current = null;
             }
         };
-    }, [connect]);
+    }, [url]);
 
-    return { sendMessage, isConnected: wsRef.current?.readyState === WebSocket.OPEN };
+    const sendMessage = (message: unknown) => {
+        const socket = wsRef.current;
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify(message));
+        } else {
+            console.warn(`[WebSocket] Cannot send. Socket state: ${
+                !socket ? "NULL (not initialized or closed)" : 
+                socket.readyState === WebSocket.CONNECTING ? "CONNECTING" :
+                socket.readyState === WebSocket.CLOSING ? "CLOSING" : "CLOSED"
+            }`);
+        }
+    };
+
+    return { sendMessage, isConnected };
 }

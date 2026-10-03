@@ -7,6 +7,27 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { useAppStore } from "@/store/useAppStore";
 import { Code2 } from "lucide-react";
 
+// Helper to infer language from filename
+const inferLanguageFromFilename = (fileName: string): string => {
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "py":
+      return "python";
+    case "js":
+      return "javascript";
+    case "jsx":
+      return "javascript";
+    case "ts":
+      return "typescript";
+    case "tsx":
+      return "typescript";
+    case "json":
+      return "json";
+    default:
+      return "plaintext";
+  }
+};
+
 // Map language strings from backend to CodeMirror extensions
 const getLanguageExtension = (language: string) => {
   switch (language.toLowerCase()) {
@@ -15,9 +36,10 @@ const getLanguageExtension = (language: string) => {
       return python();
     case "javascript":
     case "js":
+    case "jsx":
+      return javascript({ jsx: true, typescript: false });
     case "typescript":
     case "ts":
-    case "jsx":
     case "tsx":
       return javascript({ jsx: true, typescript: true });
     case "json":
@@ -39,13 +61,19 @@ export function CodeEditor() {
   // Keep track of the last known content length to calculate the streaming delta
   const prevContentLengthRef = useRef(0);
 
+  // Determine the actual language (use backend language or infer from filename)
+  const language = useMemo(() => {
+    if (!activeFileData) return "plaintext";
+    return activeFileData.language || inferLanguageFromFilename(activeFileData.fileName);
+  }, [activeFileData]);
+
   const extensions = useMemo(() => {
     const base = [EditorView.lineWrapping];
-    if (activeFileData?.language) {
-      base.push(getLanguageExtension(activeFileData.language));
+    if (language && language !== "plaintext") {
+      base.push(getLanguageExtension(language));
     }
     return base;
-  }, [activeFileData?.language]);
+  }, [language]);
 
   // Imperative update loop for high-performance streaming
   useEffect(() => {
@@ -104,7 +132,7 @@ export function CodeEditor() {
           {activeFileData.fileName}
         </div>
         <div className="ml-auto text-[10px] text-muted-foreground font-mono uppercase">
-          {activeFileData.language || "plaintext"}
+          {language}
         </div>
       </div>
 

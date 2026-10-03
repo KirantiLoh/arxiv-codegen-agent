@@ -1,4 +1,4 @@
-export type WSMessageType = "AGENT_THOUGHT" | "FILE_CREATED" | "TOKEN_STREAM" | "PDF_HIGHLIGHT";
+export type WSMessageType = "AGENT_THOUGHT" | "AGENT_OUTPUT" | "FILE_CREATED" | "TOKEN_STREAM" | "PDF_HIGHLIGHT";
 
 export interface WSMessage {
     type: WSMessageType;
@@ -6,6 +6,11 @@ export interface WSMessage {
 
 export interface AgentThoughtMessage extends WSMessage {
     type: "AGENT_THOUGHT";
+    content: string;
+}
+
+export interface AgentOutputMessage extends WSMessage {
+    type: "AGENT_OUTPUT";
     content: string;
 }
 
@@ -30,6 +35,7 @@ export interface PdfHighlightMessage extends WSMessage {
 
 export type IncomingWSMessage =
     | AgentThoughtMessage
+    | AgentOutputMessage
     | FileCreatedMessage
     | TokenStreamMessage
     | PdfHighlightMessage;

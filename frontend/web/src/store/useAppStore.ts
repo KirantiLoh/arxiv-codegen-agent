@@ -9,6 +9,7 @@ interface AppState {
     // Chat State
     chatHistory: ChatMessage[];
     isChatStreaming: boolean;
+    agentThought: string;
 
     // PDF State
     pdf: PdfState;
@@ -18,6 +19,7 @@ interface AppState {
     addFile: (fileName: string, language: string, path: string) => void;
     appendToken: (fileName: string, token: string) => void;
 
+    setAgentThought: (content: string) => void;
     addChatMessage: (role: "user" | "agent", content: string) => void;
     appendToLastAgentMessage: (content: string) => void;
     finalizeStreamingMessage: () => void;
@@ -28,9 +30,10 @@ interface AppState {
     clearPdfHighlight: () => void;
 }
 
-export const useAppStore = create<AppState>((set, _) => ({
+export const useAppStore = create<AppState>((set, get) => ({
     files: {},
     activeFile: null,
+    agentThought: "",
     chatHistory: [],
     isChatStreaming: false,
     pdf: {
@@ -115,6 +118,8 @@ export const useAppStore = create<AppState>((set, _) => ({
             }
             return { chatHistory: history, isChatStreaming: false };
         }),
+
+      setAgentThought: (content) => set({ agentThought: content }),
 
     setPdfUrl: (url) => set((state) => ({ pdf: { ...state.pdf, url } })),
 

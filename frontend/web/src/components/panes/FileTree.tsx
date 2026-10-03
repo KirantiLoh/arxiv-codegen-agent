@@ -4,6 +4,7 @@ import { FileCode, FileJson, FileText, FileType } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const getFileIcon = (fileName: string) => {
+  if (!fileName) return <></>
   const ext = fileName.split(".").pop()?.toLowerCase();
   switch (ext) {
     case "py":
@@ -27,7 +28,7 @@ export function FileTree() {
 
   const fileEntries = Object.values(files);
 
-  if (fileEntries.length === 0) {
+  if (fileEntries.length <= 0) {
     return (
       <div className="flex flex-col h-full items-center justify-center p-4 text-center">
         <FileType className="h-8 w-8 text-muted-foreground/50 mb-2" />

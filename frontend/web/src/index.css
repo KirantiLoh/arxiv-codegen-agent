@@ -111,3 +111,13 @@
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
   }
 }
+
+.katex {
+  color: hsl(var(--foreground));
+}
+
+.katex-display {
+  margin: 1rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}

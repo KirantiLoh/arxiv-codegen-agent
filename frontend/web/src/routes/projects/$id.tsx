@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Panel, Group } from 'react-resizable-panels';
 import { ResizeHandle } from '@/components/layout/ResizeHandle';
@@ -6,6 +7,7 @@ import { IdePane } from '@/components/panes/IdePane';
 import { ChatPane } from '@/components/panes/ChatPane';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { ChevronLeft, Wifi, WifiOff } from 'lucide-react';
+import { useAppStore } from "@/store/useAppStore";
 
 export const Route = createFileRoute('/projects/$id')({
   component: ProjectWorkspace,
@@ -13,10 +15,16 @@ export const Route = createFileRoute('/projects/$id')({
 
 function ProjectWorkspace() {
   const { id } = Route.useParams();
-  
+
+  const setPdfUrl = useAppStore((s) => s.setPdfUrl);
+
   // Initialize WebSocket connection (Step 2 hook)
-  // In production, this URL will come from your environment variables
-  const { sendMessage, isConnected } = useWebSocket(`ws://localhost:8080/ws?project_id=${id}`);
+  const { sendMessage, isConnected } = useWebSocket(`ws://localhost:8000/projects/${id}/ws`);
+
+    useEffect(() => {
+      setPdfUrl(`https://arxiv.org/pdf/${id}`)  
+    }, [id])
+    
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
@@ -38,7 +46,7 @@ function ProjectWorkspace() {
               <>
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <Wifi className="h-3.5 w-3.5 text-emerald-500" />
-                <span className="text-xs text-muted-foreground">Gateway Connected</span>
+                <span className="text-xs text-muted-foreground">Connected</span>
               </>
             ) : (
               <>
